@@ -24,7 +24,6 @@ const qualitySelect = document.getElementById("qualitySelect");
 const qualityLabel = document.getElementById("qualityLabel");
 
 formatButtons.forEach((button) => {
-
     button.addEventListener("click", function () {
 
         formatButtons.forEach((btn) => {
@@ -33,8 +32,9 @@ formatButtons.forEach((button) => {
 
         this.classList.add("active");
 
-        if (this.textContent.trim() === "MP3") {
+        const format = this.dataset.format;
 
+        if (format === "mp3") {
             qualityLabel.textContent = "Calidad MP3";
 
             qualitySelect.innerHTML = `
@@ -43,11 +43,9 @@ formatButtons.forEach((button) => {
                 <option value="256">256 kbps</option>
                 <option value="320">320 kbps</option>
             `;
-
         }
 
-        if (this.textContent.trim() === "MP4") {
-
+        if (format === "mp4") {
             qualityLabel.textContent = "Calidad de video";
 
             qualitySelect.innerHTML = `
@@ -56,9 +54,6 @@ formatButtons.forEach((button) => {
                 <option value="720">720p HD</option>
                 <option value="1080">1080p Full HD</option>
             `;
-
         }
-
     });
-
 });
