@@ -312,3 +312,38 @@ header {
     font-weight: 600;
     color: #4f46e5;
 }
+.upload-box {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    min-height: 120px !important;
+    margin: 15px 0 25px !important;
+    padding: 22px !important;
+    border: 2px dashed #c7d2fe !important;
+    border-radius: 14px !important;
+    background: #f8faff !important;
+    cursor: pointer !important;
+}
+
+.upload-box:hover {
+    border-color: #4f46e5 !important;
+    background: #f3f4ff !important;
+}
+
+.upload-icon {
+    display: block !important;
+    margin-bottom: 8px !important;
+    font-size: 28px !important;
+}
+
+.upload-box strong {
+    display: block !important;
+    margin-bottom: 5px !important;
+}
+
+.upload-box small {
+    display: block !important;
+    color: #6b7280 !important;
+}
