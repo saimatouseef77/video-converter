@@ -1,50 +1,242 @@
-<div class="link-converter-card">
+<!DOCTYPE html>
+<html lang="es">
 
-    <h3>Convertir desde un enlace</h3>
+<head>
+    <meta charset="UTF-8">
 
-    <p class="link-help">
-        Pega un enlace público o multimedia compatible.
-    </p>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <input
-        type="text"
-        id="videoUrl"
-        placeholder="Pega un enlace de TikTok, Instagram o video directo"
+    <title>Descargas Musica - Convertidor de Video a MP3 y MP4</title>
+
+    <meta
+        name="description"
+        content="Descargas Musica te permite convertir tus propios videos a MP3 y MP4 de forma rápida y sencilla."
     >
 
-    <div class="link-formats">
-        <button type="button" class="link-format-btn active" data-format="mp3">
-            MP3
-        </button>
+    <link rel="stylesheet" href="style.css">
+</head>
 
-        <button type="button" class="link-format-btn" data-format="mp4">
-            MP4
-        </button>
-    </div>
+<body>
 
-    <div class="link-quality-section">
+    <header>
+        <div class="logo">
+            Descargas Musica
+        </div>
 
-        <label id="linkQualityLabel">
-            Calidad MP3
-        </label>
+        <div class="language-dropdown">
+            <select id="languageSelect">
+                <option value="es">🌐 Español</option>
+                <option value="en">English</option>
+            </select>
+        </div>
+    </header>
 
-        <select id="linkQualitySelect">
-            <option value="128">128 kbps</option>
-            <option value="192">192 kbps</option>
-            <option value="256">256 kbps</option>
-            <option value="320">320 kbps</option>
-        </select>
 
-    </div>
+    <main>
 
-    <button
-    type="button"
-    id="convertLinkButton"
-    class="convert-link-button"
->
-    Convertir enlace
-</button>
+        <section class="hero">
 
-<div id="linkStatus" class="link-status"></div>
+            <span class="badge">
+                Conversor rápido y sencillo
+            </span>
 
-</div>
+            <h1>
+                Descargas Musica
+            </h1>
+
+            <p>
+                Convierte tus videos a MP3 o MP4 de forma rápida,
+                sencilla y desde cualquier dispositivo.
+            </p>
+
+
+            <div class="converter-box">
+
+                <h2>
+                    Convertidor de Video a MP3 y MP4
+                </h2>
+
+
+                <!-- LINK CONVERTER -->
+
+                <div class="link-converter-card">
+
+                    <h3>
+                        Convertir desde un enlace
+                    </h3>
+
+                    <p class="link-help">
+                        Pega un enlace público o multimedia compatible.
+                    </p>
+
+                    <input
+                        type="text"
+                        id="videoUrl"
+                        placeholder="Pega un enlace de TikTok, Instagram o video directo"
+                    >
+
+                    <div class="link-formats">
+
+                        <button
+                            type="button"
+                            class="link-format-btn active"
+                            data-format="mp3"
+                        >
+                            MP3
+                        </button>
+
+                        <button
+                            type="button"
+                            class="link-format-btn"
+                            data-format="mp4"
+                        >
+                            MP4
+                        </button>
+
+                    </div>
+
+
+                    <div class="link-quality-section">
+
+                        <label id="linkQualityLabel">
+                            Calidad MP3
+                        </label>
+
+                        <select id="linkQualitySelect">
+                            <option value="128">128 kbps</option>
+                            <option value="192">192 kbps</option>
+                            <option value="256">256 kbps</option>
+                            <option value="320">320 kbps</option>
+                        </select>
+
+                    </div>
+
+
+                    <button
+                        type="button"
+                        id="convertLinkButton"
+                        class="convert-link-button"
+                    >
+                        Convertir enlace
+                    </button>
+
+                    <div
+                        id="linkStatus"
+                        class="link-status"
+                    ></div>
+
+                </div>
+
+
+                <!-- DIVIDER -->
+
+                <div class="or-divider">
+                    <span>o</span>
+                </div>
+
+
+                <!-- UPLOAD CONVERTER -->
+
+                <div class="upload-converter-card">
+
+                    <h3>
+                        Convertir un archivo de video
+                    </h3>
+
+                    <label
+                        for="videoFile"
+                        class="upload-box"
+                    >
+
+                        <span class="upload-icon">
+                            ↑
+                        </span>
+
+                        <strong>
+                            Seleccionar video
+                        </strong>
+
+                        <small>
+                            MP4, MOV, AVI y otros formatos compatibles
+                        </small>
+
+                    </label>
+
+
+                    <input
+                        type="file"
+                        id="videoFile"
+                        accept="video/*"
+                        hidden
+                    >
+
+
+                    <div
+                        id="selectedFileName"
+                        class="selected-file"
+                    ></div>
+
+
+                    <div class="formats">
+
+                        <button
+                            type="button"
+                            class="format-btn active"
+                            data-format="mp3"
+                        >
+                            MP3
+                        </button>
+
+                        <button
+                            type="button"
+                            class="format-btn"
+                            data-format="mp4"
+                        >
+                            MP4
+                        </button>
+
+                    </div>
+
+
+                    <div class="quality-section">
+
+                        <label id="qualityLabel">
+                            Calidad MP3
+                        </label>
+
+                        <select id="qualitySelect">
+                            <option value="128">128 kbps</option>
+                            <option value="192">192 kbps</option>
+                            <option value="256">256 kbps</option>
+                            <option value="320">320 kbps</option>
+                        </select>
+
+                    </div>
+
+
+                    <button
+                        type="button"
+                        class="convert-upload-button"
+                    >
+                        Convertir archivo
+                    </button>
+
+                </div>
+
+
+                <p class="small-note">
+                    Usa únicamente contenido propio o contenido que tengas permiso para convertir.
+                </p>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
