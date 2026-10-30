@@ -120,6 +120,17 @@ async function validateRemoteUrl(urlString) {
    DOWNLOAD DIRECT MEDIA URL
 ----------------------------- */
 
+async function validateRemoteUrl(urlString) {
+   ...
+}
+
+async function findPublicMediaUrl(pageUrl) {
+   ...
+}
+
+async function downloadRemoteMedia(urlString) {
+   ...
+}
 async function downloadRemoteMedia(urlString) {
 
     const safeUrl = await validateRemoteUrl(urlString);
