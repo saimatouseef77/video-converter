@@ -1,52 +1,90 @@
+/* =========================
+   BASIC ELEMENTS
+========================= */
+
 const languageSelect = document.getElementById("languageSelect");
-const formatButtons = document.querySelectorAll(".format-btn");
+
+/* Upload converter */
+const uploadFormatButtons = document.querySelectorAll(".format-btn");
 const qualitySelect = document.getElementById("qualitySelect");
 const qualityLabel = document.getElementById("qualityLabel");
 const videoFile = document.getElementById("videoFile");
 const selectedFileName = document.getElementById("selectedFileName");
-const videoUrl = document.getElementById("videoUrl");
-const convertButton = document.querySelector(".convert-button");
 
-/* LANGUAGE */
+const uploadConvertButton =
+    document.querySelector(".convert-upload-button") ||
+    document.querySelector(".convert-button");
+
+/* Link converter */
+const videoUrl = document.getElementById("videoUrl");
+const linkStatus = document.getElementById("linkStatus");
+const linkFormatButtons = document.querySelectorAll(".link-format-btn");
+const linkQualitySelect = document.getElementById("linkQualitySelect");
+const linkQualityLabel = document.getElementById("linkQualityLabel");
+const convertLinkButton = document.getElementById("convertLinkButton");
+
+
+/* =========================
+   LANGUAGE
+========================= */
 
 const translations = {
     es: {
         title: "Descargas Musica",
-        description: "Convierte tus propios videos a MP3 o MP4 de forma rápida, sencilla y desde cualquier dispositivo.",
-        converterTitle: "Convertidor de Video a MP3 y MP4",
-        placeholder: "Pega un enlace multimedia permitido",
-        convert: "Convertir ahora"
+        description:
+            "Convierte tus videos a MP3 o MP4 de forma rápida y sencilla.",
+        converterTitle:
+            "Convertidor de Video a MP3 y MP4"
     },
 
     en: {
         title: "Music Downloads",
-        description: "Convert your own videos to MP3 or MP4 quickly and easily from any device.",
-        converterTitle: "Video to MP3 and MP4 Converter",
-        placeholder: "Paste a permitted direct media link",
-        convert: "Convert now"
+        description:
+            "Convert your videos to MP3 or MP4 quickly and easily.",
+        converterTitle:
+            "Video to MP3 and MP4 Converter"
     }
 };
 
 languageSelect?.addEventListener("change", function () {
+
     const text = translations[this.value];
 
     if (!text) return;
 
-    document.querySelector(".hero h1").textContent = text.title;
-    document.querySelector(".hero > p").textContent = text.description;
-    document.querySelector(".converter-box h2").textContent = text.converterTitle;
-    videoUrl.placeholder = text.placeholder;
-    convertButton.textContent = text.convert;
+    const heroTitle =
+        document.querySelector(".hero h1");
+
+    const heroDescription =
+        document.querySelector(".hero > p");
+
+    const converterTitle =
+        document.querySelector(".converter-box h2");
+
+    if (heroTitle)
+        heroTitle.textContent = text.title;
+
+    if (heroDescription)
+        heroDescription.textContent =
+            text.description;
+
+    if (converterTitle)
+        converterTitle.textContent =
+            text.converterTitle;
 });
 
-/* MP3 / MP4 */
 
-formatButtons.forEach((button) => {
+/* =========================
+   UPLOAD MP3 / MP4
+========================= */
+
+uploadFormatButtons.forEach((button) => {
+
     button.addEventListener("click", function () {
 
-        formatButtons.forEach((btn) => {
-            btn.classList.remove("active");
-        });
+        uploadFormatButtons.forEach((btn) =>
+            btn.classList.remove("active")
+        );
 
         this.classList.add("active");
 
@@ -54,7 +92,8 @@ formatButtons.forEach((button) => {
 
         if (format === "mp3") {
 
-            qualityLabel.textContent = "Calidad MP3";
+            qualityLabel.textContent =
+                "Calidad MP3";
 
             qualitySelect.innerHTML = `
                 <option value="128">128 kbps</option>
@@ -65,7 +104,8 @@ formatButtons.forEach((button) => {
 
         } else {
 
-            qualityLabel.textContent = "Calidad de video";
+            qualityLabel.textContent =
+                "Calidad de video";
 
             qualitySelect.innerHTML = `
                 <option value="360">360p</option>
@@ -73,109 +113,273 @@ formatButtons.forEach((button) => {
                 <option value="720">720p HD</option>
                 <option value="1080">1080p Full HD</option>
             `;
-
         }
-
     });
 });
 
-/* FILE SELECT */
+
+/* =========================
+   LINK MP3 / MP4
+========================= */
+
+linkFormatButtons.forEach((button) => {
+
+    button.addEventListener("click", function () {
+
+        linkFormatButtons.forEach((btn) =>
+            btn.classList.remove("active")
+        );
+
+        this.classList.add("active");
+
+        const format = this.dataset.format;
+
+        if (format === "mp3") {
+
+            linkQualityLabel.textContent =
+                "Calidad MP3";
+
+            linkQualitySelect.innerHTML = `
+                <option value="128">128 kbps</option>
+                <option value="192">192 kbps</option>
+                <option value="256">256 kbps</option>
+                <option value="320">320 kbps</option>
+            `;
+
+        } else {
+
+            linkQualityLabel.textContent =
+                "Calidad de video";
+
+            linkQualitySelect.innerHTML = `
+                <option value="360">360p</option>
+                <option value="480">480p</option>
+                <option value="720">720p HD</option>
+                <option value="1080">1080p Full HD</option>
+            `;
+        }
+    });
+});
+
+
+/* =========================
+   FILE SELECT
+========================= */
 
 videoFile?.addEventListener("change", function () {
 
     if (this.files && this.files.length > 0) {
 
-        const file = this.files[0];
-
         selectedFileName.textContent =
-            "✓ Archivo seleccionado: " + file.name;
-
-        videoUrl.value = "";
+            "✓ Archivo seleccionado: " +
+            this.files[0].name;
 
     } else {
 
         selectedFileName.textContent = "";
-
     }
-
 });
 
-/* URL INPUT */
 
-videoUrl?.addEventListener("input", function () {
+/* =========================
+   UPLOAD CONVERSION
+========================= */
 
-    if (this.value.trim() !== "") {
+uploadConvertButton?.addEventListener(
+    "click",
+    async function () {
 
-        videoFile.value = "";
-        selectedFileName.textContent = "";
+        if (
+            !videoFile.files ||
+            videoFile.files.length === 0
+        ) {
 
-    }
+            alert(
+                "Primero selecciona un video."
+            );
 
-});
+            return;
+        }
 
-/* CONVERT */
+        const activeButton =
+            document.querySelector(
+                ".format-btn.active"
+            );
 
-convertButton?.addEventListener("click", async function () {
+        const format =
+            activeButton?.dataset.format ||
+            "mp3";
 
-    const activeFormatButton =
-        document.querySelector(".format-btn.active");
+        const quality =
+            qualitySelect.value;
 
-    const format =
-        activeFormatButton?.dataset.format || "mp3";
+        const originalFile =
+            videoFile.files[0];
 
-    const quality =
-        qualitySelect.value;
+        const baseName =
+            originalFile.name.replace(
+                /\.[^/.]+$/,
+                ""
+            );
 
-    const formData =
-        new FormData();
-
-    const hasFile =
-        videoFile.files &&
-        videoFile.files.length > 0;
-
-    const enteredUrl =
-        videoUrl.value.trim();
-
-    if (!hasFile && !enteredUrl) {
-
-        alert(
-            "Selecciona un video o introduce un enlace multimedia directo."
-        );
-
-        return;
-    }
-
-    if (hasFile) {
+        const formData =
+            new FormData();
 
         formData.append(
             "video",
-            videoFile.files[0]
+            originalFile
         );
 
-    } else {
+        formData.append(
+            "format",
+            format
+        );
+
+        formData.append(
+            "quality",
+            quality
+        );
+
+        await convertMedia(
+            formData,
+            uploadConvertButton,
+            baseName,
+            format
+        );
+    }
+);
+
+
+/* =========================
+   LINK CONVERSION
+========================= */
+
+convertLinkButton?.addEventListener(
+    "click",
+    async function () {
+
+        const url =
+            videoUrl.value.trim();
+
+        if (!url) {
+
+            linkStatus.textContent =
+                "Introduce un enlace.";
+
+            return;
+        }
+
+        let parsed;
+
+        try {
+
+            parsed = new URL(url);
+
+        } catch {
+
+            linkStatus.textContent =
+                "El enlace no es válido.";
+
+            return;
+        }
+
+        const hostname =
+            parsed.hostname
+                .replace("www.", "")
+                .toLowerCase();
+
+        if (
+            hostname.includes("tiktok.com")
+        ) {
+
+            linkStatus.textContent =
+                "Comprobando enlace público de TikTok...";
+
+        } else if (
+            hostname.includes("instagram.com")
+        ) {
+
+            linkStatus.textContent =
+                "Comprobando enlace público de Instagram...";
+
+        } else {
+
+            linkStatus.textContent =
+                "Comprobando enlace multimedia...";
+        }
+
+        const activeButton =
+            document.querySelector(
+                ".link-format-btn.active"
+            );
+
+        const format =
+            activeButton?.dataset.format ||
+            "mp3";
+
+        const quality =
+            linkQualitySelect.value;
+
+        const formData =
+            new FormData();
 
         formData.append(
             "url",
-            enteredUrl
+            url
         );
 
+        formData.append(
+            "format",
+            format
+        );
+
+        formData.append(
+            "quality",
+            quality
+        );
+
+        let baseName =
+            getNameFromUrl(parsed);
+
+        try {
+
+            await convertMedia(
+                formData,
+                convertLinkButton,
+                baseName,
+                format,
+                true
+            );
+
+            linkStatus.textContent =
+                "✓ Conversión completada.";
+
+        } catch (error) {
+
+            linkStatus.textContent =
+                error.message;
+        }
     }
+);
 
-    formData.append(
-        "format",
-        format
-    );
 
-    formData.append(
-        "quality",
-        quality
-    );
+/* =========================
+   SHARED CONVERSION
+========================= */
 
-    const originalText =
-        convertButton.textContent;
+async function convertMedia(
+    formData,
+    button,
+    baseName,
+    format,
+    throwError = false
+) {
 
-    convertButton.disabled = true;
-    convertButton.textContent =
+    const oldText =
+        button.textContent;
+
+    button.disabled = true;
+    button.textContent =
         "Convirtiendo...";
 
     try {
@@ -192,16 +396,16 @@ convertButton?.addEventListener("click", async function () {
         if (!response.ok) {
 
             let message =
-                "No se pudo convertir el archivo.";
+                "Este enlace o archivo no se puede convertir.";
 
             try {
 
-                const errorData =
+                const data =
                     await response.json();
 
-                if (errorData.error) {
+                if (data.error) {
                     message =
-                        errorData.error;
+                        data.error;
                 }
 
             } catch {}
@@ -212,58 +416,98 @@ convertButton?.addEventListener("click", async function () {
         const blob =
             await response.blob();
 
-        const downloadUrl =
+        const objectUrl =
             URL.createObjectURL(blob);
 
         const link =
             document.createElement("a");
 
         link.href =
-            downloadUrl;
+            objectUrl;
 
         link.download =
-            format === "mp3"
-                ? "descargas-musica.mp3"
-                : "descargas-musica.mp4";
+            `${baseName}.${format}`;
 
         document.body.appendChild(link);
 
         link.click();
-
         link.remove();
 
         URL.revokeObjectURL(
-            downloadUrl
+            objectUrl
         );
 
-        convertButton.textContent =
-            "¡Conversión completada!";
+        button.textContent =
+            "¡Completado!";
 
         setTimeout(() => {
 
-            convertButton.textContent =
-                originalText;
+            button.textContent =
+                oldText;
 
-            convertButton.disabled =
+            button.disabled =
                 false;
 
         }, 2000);
 
     } catch (error) {
 
-        console.error(error);
+        button.textContent =
+            oldText;
 
-        alert(
-            error.message ||
-            "No se pudo convertir el archivo."
-        );
-
-        convertButton.textContent =
-            originalText;
-
-        convertButton.disabled =
+        button.disabled =
             false;
 
+        if (throwError) {
+            throw error;
+        }
+
+        alert(error.message);
+    }
+}
+
+
+/* =========================
+   GET NAME FROM URL
+========================= */
+
+function getNameFromUrl(parsedUrl) {
+
+    let pathname =
+        parsedUrl.pathname;
+
+    let lastPart =
+        pathname
+            .split("/")
+            .filter(Boolean)
+            .pop();
+
+    if (!lastPart) {
+        return "descargas-musica";
     }
 
-});
+    try {
+        lastPart =
+            decodeURIComponent(
+                lastPart
+            );
+    } catch {}
+
+    lastPart =
+        lastPart.replace(
+            /\.[^/.]+$/,
+            ""
+        );
+
+    lastPart =
+        lastPart.replace(
+            /[^a-zA-Z0-9-_ ]/g,
+            ""
+        );
+
+    if (!lastPart) {
+        return "descargas-musica";
+    }
+
+    return lastPart;
+}
