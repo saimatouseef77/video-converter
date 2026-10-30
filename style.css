@@ -1,0 +1,141 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f7f9fc;
+    color: #1f2937;
+}
+
+header {
+    width: 100%;
+    padding: 20px 6%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: 700;
+    color: #4f46e5;
+}
+
+.language-selector {
+    padding: 10px 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    cursor: pointer;
+    background: #ffffff;
+}
+
+.hero {
+    min-height: 80vh;
+    padding: 80px 20px;
+    text-align: center;
+    background:
+        radial-gradient(circle at top left, #eef2ff 0%, transparent 35%),
+        radial-gradient(circle at bottom right, #ecfeff 0%, transparent 35%),
+        #f8fafc;
+}
+
+.hero h1 {
+    font-size: 52px;
+    margin-bottom: 15px;
+    color: #111827;
+}
+
+.hero > p {
+    max-width: 650px;
+    margin: 0 auto 40px;
+    font-size: 18px;
+    line-height: 1.7;
+    color: #6b7280;
+}
+
+.converter-box {
+    max-width: 720px;
+    margin: auto;
+    background: #ffffff;
+    padding: 35px;
+    border-radius: 24px;
+    box-shadow: 0 20px 60px rgba(15, 23, 42, 0.10);
+}
+
+.converter-box h2 {
+    margin-bottom: 25px;
+    font-size: 24px;
+}
+
+.converter-box input {
+    width: 100%;
+    padding: 18px;
+    border: 1px solid #d1d5db;
+    border-radius: 12px;
+    font-size: 16px;
+    outline: none;
+}
+
+.formats {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin: 25px 0;
+}
+
+.formats button {
+    padding: 12px 28px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    background: #f9fafb;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.formats button:hover {
+    background: #eef2ff;
+    border-color: #6366f1;
+}
+
+.convert-button {
+    width: 100%;
+    padding: 17px;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #4f46e5, #06b6d4);
+    color: white;
+    font-size: 17px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.convert-button:hover {
+    opacity: 0.92;
+}
+
+@media (max-width: 768px) {
+    header {
+        padding: 16px 20px;
+    }
+
+    .logo {
+        font-size: 19px;
+    }
+
+    .hero {
+        padding: 60px 18px;
+    }
+
+    .hero h1 {
+        font-size: 38px;
+    }
+
+    .converter-box {
+        padding: 24px 18px;
+    }
+}
