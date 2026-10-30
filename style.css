@@ -347,3 +347,93 @@ header {
     display: block !important;
     color: #6b7280 !important;
 }
+.link-converter-card {
+    margin-bottom: 30px;
+    padding: 30px;
+    border-radius: 20px;
+    background: #ffffff;
+    box-shadow: 0 15px 40px rgba(15, 23, 42, 0.08);
+}
+
+.link-converter-card h3 {
+    margin-bottom: 8px;
+    text-align: center;
+    font-size: 22px;
+}
+
+.link-help {
+    margin-bottom: 20px;
+    text-align: center;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.link-converter-card input {
+    width: 100%;
+    padding: 17px;
+    border: 1px solid #d1d5db;
+    border-radius: 12px;
+    font-size: 16px;
+    outline: none;
+}
+
+.link-status {
+    min-height: 22px;
+    margin-top: 12px;
+    text-align: center;
+    font-size: 14px;
+    color: #6b7280;
+}
+
+.link-formats {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin: 22px 0;
+}
+
+.link-format-btn {
+    padding: 12px 28px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    background: #ffffff;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.link-format-btn.active {
+    color: #ffffff;
+    border-color: transparent;
+    background: linear-gradient(135deg, #4f46e5, #06b6d4);
+}
+
+.link-quality-section {
+    max-width: 320px;
+    margin: 0 auto 22px;
+}
+
+.link-quality-section label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 700;
+}
+
+.link-quality-section select {
+    width: 100%;
+    padding: 13px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    background: #ffffff;
+}
+
+.convert-link-button {
+    width: 100%;
+    padding: 16px;
+    border: none;
+    border-radius: 12px;
+    color: #ffffff;
+    font-size: 17px;
+    font-weight: 700;
+    cursor: pointer;
+    background: linear-gradient(135deg, #4f46e5, #06b6d4);
+}
