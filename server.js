@@ -381,18 +381,73 @@ app.post(
                             });
                     }
 
-                    res.download(
-                        outputPath,
-                        `descargas-musica.${format}`,
-                        () => {
+                    let downloadBaseName = "descargas-musica";
 
-                            cleanupFiles(
-                                inputPath,
-                                outputPath
-                            );
+if (req.file && req.file.originalname) {
 
-                        }
-                    );
+    downloadBaseName =
+        req.file.originalname.replace(
+            /\.[^/.]+$/,
+            ""
+        );
+}
+
+if (!req.file && req.body.url) {
+
+    try {
+
+        const parsedUrl =
+            new URL(req.body.url);
+
+        let urlName =
+            parsedUrl.pathname
+                .split("/")
+                .filter(Boolean)
+                .pop();
+
+        if (urlName) {
+
+            urlName =
+                decodeURIComponent(
+                    urlName
+                );
+
+            urlName =
+                urlName.replace(
+                    /\.[^/.]+$/,
+                    ""
+                );
+
+            urlName =
+                urlName.replace(
+                    /[^a-zA-Z0-9-_ ]/g,
+                    ""
+                );
+
+            if (urlName) {
+                downloadBaseName =
+                    urlName;
+            }
+        }
+
+    } catch {}
+}
+
+const downloadFileName =
+    `${downloadBaseName}.${format}`;
+
+res.download(
+    outputPath,
+    downloadFileName,
+    () => {
+
+        cleanupFiles(
+            inputPath,
+            outputPath
+        );
+
+    }
+);
 
                 }
             );
