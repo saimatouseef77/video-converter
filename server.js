@@ -115,22 +115,74 @@ async function validateRemoteUrl(urlString) {
 
     return parsedUrl.toString();
 }
+async function findPublicMediaUrl(pageUrl) {
 
+    const safePageUrl = await validateRemoteUrl(pageUrl);
+
+    const response = await fetch(safePageUrl, {
+        redirect: "follow",
+        headers: {
+            "User-Agent": "Mozilla/5.0"
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error("PAGE_FETCH_FAILED");
+    }
+
+    const contentType =
+        response.headers.get("content-type") || "";
+
+    // Agar URL khud direct video/audio file hai
+    if (
+        contentType.startsWith("video/") ||
+        contentType.startsWith("audio/")
+    ) {
+        return safePageUrl;
+    }
+
+    // Agar HTML webpage nahi hai
+    if (!contentType.includes("text/html")) {
+        throw new Error("NO_PUBLIC_MEDIA");
+    }
+
+    const html = await response.text();
+
+    const $ = cheerio.load(html);
+
+    const candidates = [
+        $('meta[property="og:video:secure_url"]').attr("content"),
+        $('meta[property="og:video"]').attr("content"),
+        $('meta[property="og:audio:secure_url"]').attr("content"),
+        $('meta[property="og:audio"]').attr("content"),
+        $('meta[name="twitter:player:stream"]').attr("content"),
+        $("video source").first().attr("src"),
+        $("video").first().attr("src"),
+        $("audio source").first().attr("src"),
+        $("audio").first().attr("src")
+    ].filter(Boolean);
+
+    for (const candidate of candidates) {
+
+        try {
+
+            const absoluteUrl =
+                new URL(candidate, safePageUrl).toString();
+
+            await validateRemoteUrl(absoluteUrl);
+
+            return absoluteUrl;
+
+        } catch {
+            // next candidate
+        }
+    }
+
+    throw new Error("NO_PUBLIC_MEDIA");
+}
 /* -----------------------------
    DOWNLOAD DIRECT MEDIA URL
 ----------------------------- */
-
-async function validateRemoteUrl(urlString) {
-   ...
-}
-
-async function findPublicMediaUrl(pageUrl) {
-   ...
-}
-
-async function downloadRemoteMedia(urlString) {
-   ...
-}
 async function downloadRemoteMedia(urlString) {
 
     const safeUrl = await validateRemoteUrl(urlString);
