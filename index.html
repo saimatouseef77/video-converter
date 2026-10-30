@@ -16,58 +16,64 @@
 
 <body>
 
-    <header>
+<header>
+    <div class="logo">Descargas Musica</div>
 
-        <div class="logo">
-            Descargas Musica
-        </div>
+    <div class="language-dropdown">
+        <select id="languageSelect">
+            <option value="es">🌐 Español</option>
+            <option value="en">English</option>
+            <option value="pt">Português</option>
+            <option value="fr">Français</option>
+            <option value="de">Deutsch</option>
+            <option value="it">Italiano</option>
+        </select>
+    </div>
+</header>
 
-        <div class="language-selector">
-            🌐 Español
-        </div>
+<main>
 
-    </header>
+    <section class="hero">
 
+        <span class="badge">Conversor rápido y sencillo</span>
 
-    <main>
+        <h1>Descargas Musica</h1>
 
-        <section class="hero">
+        <p>
+            Convierte tus propios videos a MP3 o MP4 de forma rápida,
+            sencilla y desde cualquier dispositivo.
+        </p>
 
-            <h1>Descargas Musica</h1>
+        <div class="converter-box">
 
-            <p>
-                Convierte tus videos a MP3 y MP4 de forma rápida,
-                sencilla y desde cualquier dispositivo.
-            </p>
+            <h2>Convertidor de Video a MP3 y MP4</h2>
 
-            <div class="converter-box">
-
-                <h2>Convertidor de Video a MP3 y MP4</h2>
-
+            <div class="input-wrap">
                 <input
                     type="text"
-                    placeholder="Pega el enlace o selecciona tu video"
+                    placeholder="Pega un enlace permitido o selecciona tu video"
                 >
-
-                <div class="formats">
-
-                    <button>MP3</button>
-
-                    <button>MP4</button>
-
-                </div>
-
-                <button class="convert-button">
-                    Convertir
-                </button>
-
             </div>
 
-        </section>
+            <div class="formats">
+                <button class="format-btn active">MP3</button>
+                <button class="format-btn">MP4</button>
+            </div>
 
-    </main>
+            <button class="convert-button">
+                Convertir ahora
+            </button>
 
+            <p class="small-note">
+                Usa únicamente contenido propio o contenido que tengas permiso para convertir.
+            </p>
 
+        </div>
+
+    </section>
+
+</main>
+    
 </body>
 
 </html>
