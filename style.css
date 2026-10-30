@@ -183,3 +183,21 @@ header {
     line-height: 1.6;
     color: #9ca3af;
 }
+.converter-box {
+    padding-bottom: 40px;
+}
+
+.small-note {
+    display: block;
+    margin: 18px auto 0;
+    padding: 0 10px;
+    max-width: 650px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #6b7280;
+    text-align: center;
+}
+
+.convert-button {
+    margin-bottom: 0;
+}
