@@ -57,3 +57,82 @@ formatButtons.forEach((button) => {
         }
     });
 });
+const convertButtonEl = document.querySelector(".convert-button");
+
+convertButtonEl.addEventListener("click", async function () {
+
+    if (!videoFile.files || videoFile.files.length === 0) {
+        alert("Primero selecciona un video.");
+        return;
+    }
+
+    const activeFormatButton = document.querySelector(".format-btn.active");
+    const selectedFormat = activeFormatButton.dataset.format;
+    const selectedQuality = qualitySelect.value;
+
+    const formData = new FormData();
+
+    formData.append("video", videoFile.files[0]);
+    formData.append("format", selectedFormat);
+    formData.append("quality", selectedQuality);
+
+    const oldButtonText = convertButtonEl.textContent;
+
+    convertButtonEl.disabled = true;
+    convertButtonEl.textContent = "Convirtiendo...";
+
+    try {
+
+        const response = await fetch(
+            "https://descargas-musica-backend.onrender.com/convert",
+            {
+                method: "POST",
+                body: formData
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error("Conversion failed");
+        }
+
+        const blob = await response.blob();
+
+        const downloadUrl = URL.createObjectURL(blob);
+
+        const downloadLink = document.createElement("a");
+
+        downloadLink.href = downloadUrl;
+
+        downloadLink.download =
+            selectedFormat === "mp3"
+                ? "descargas-musica.mp3"
+                : "descargas-musica.mp4";
+
+        document.body.appendChild(downloadLink);
+
+        downloadLink.click();
+
+        downloadLink.remove();
+
+        URL.revokeObjectURL(downloadUrl);
+
+        convertButtonEl.textContent = "¡Conversión completada!";
+
+        setTimeout(() => {
+            convertButtonEl.textContent = oldButtonText;
+            convertButtonEl.disabled = false;
+        }, 2000);
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "No se pudo convertir el video. Inténtalo de nuevo."
+        );
+
+        convertButtonEl.textContent = oldButtonText;
+        convertButtonEl.disabled = false;
+    }
+
+});
