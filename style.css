@@ -201,3 +201,24 @@ header {
 .convert-button {
     margin-bottom: 0;
 }
+/* Fix converter bottom spacing */
+
+.convert-button {
+    display: block;
+    margin-bottom: 24px !important;
+}
+
+.converter-box .small-note {
+    display: block !important;
+    margin: 0 auto !important;
+    padding: 0 20px 10px !important;
+    max-width: 720px;
+    font-size: 14px !important;
+    line-height: 1.6 !important;
+    color: #6b7280 !important;
+    text-align: center !important;
+}
+
+.converter-box {
+    padding-bottom: 35px !important;
+}
