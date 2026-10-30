@@ -19,3 +19,46 @@ languageSelect.addEventListener("change", function () {
         document.querySelector(".convert-button").textContent = "Convertir ahora";
     }
 });
+const formatButtons = document.querySelectorAll(".format-btn");
+const qualitySelect = document.getElementById("qualitySelect");
+const qualityLabel = document.getElementById("qualityLabel");
+
+formatButtons.forEach((button) => {
+
+    button.addEventListener("click", function () {
+
+        formatButtons.forEach((btn) => {
+            btn.classList.remove("active");
+        });
+
+        this.classList.add("active");
+
+        if (this.textContent.trim() === "MP3") {
+
+            qualityLabel.textContent = "Calidad MP3";
+
+            qualitySelect.innerHTML = `
+                <option value="128">128 kbps</option>
+                <option value="192">192 kbps</option>
+                <option value="256">256 kbps</option>
+                <option value="320">320 kbps</option>
+            `;
+
+        }
+
+        if (this.textContent.trim() === "MP4") {
+
+            qualityLabel.textContent = "Calidad de video";
+
+            qualitySelect.innerHTML = `
+                <option value="360">360p</option>
+                <option value="480">480p</option>
+                <option value="720">720p HD</option>
+                <option value="1080">1080p Full HD</option>
+            `;
+
+        }
+
+    });
+
+});
