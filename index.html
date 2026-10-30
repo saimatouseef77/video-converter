@@ -49,11 +49,33 @@
             <h2>Convertidor de Video a MP3 y MP4</h2>
 
             <div class="input-wrap">
-                <input
-                    type="text"
-                    placeholder="Pega un enlace permitido o selecciona tu video"
-                >
-            </div>
+
+    <input
+        type="text"
+        id="videoUrl"
+        placeholder="Pega un enlace permitido"
+    >
+
+    <div class="or-divider">
+        <span>o</span>
+    </div>
+
+    <label for="videoFile" class="upload-box">
+        <span class="upload-icon">⬆</span>
+        <strong>Seleccionar video</strong>
+        <small>MP4, MOV, AVI y otros formatos compatibles</small>
+    </label>
+
+    <input
+        type="file"
+        id="videoFile"
+        accept="video/*"
+        hidden
+    >
+
+    <div id="selectedFileName" class="selected-file"></div>
+
+</div>
 
             <div class="formats">
     <button type="button" class="format-btn active" data-format="mp3">MP3</button>
