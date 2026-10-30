@@ -544,11 +544,10 @@ res.download(
             }
 
             if (
-                error.message ===
-                "NOT_MEDIA"
-            ) {
-                message =
-                    "El enlace no apunta directamente a un archivo de audio o video compatible.";
+                if (error.message === "NO_PUBLIC_MEDIA") {
+    message =
+        "No se encontró un archivo multimedia público en este enlace.";
+}
             }
 
             return res
