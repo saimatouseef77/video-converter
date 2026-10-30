@@ -8,19 +8,21 @@ const videoUrl = document.getElementById("videoUrl");
 const convertButton = document.querySelector(".convert-button");
 
 /* LANGUAGE */
+
 const translations = {
     es: {
         title: "Descargas Musica",
         description: "Convierte tus propios videos a MP3 o MP4 de forma rápida, sencilla y desde cualquier dispositivo.",
         converterTitle: "Convertidor de Video a MP3 y MP4",
-        placeholder: "Pega un enlace permitido",
+        placeholder: "Pega un enlace multimedia permitido",
         convert: "Convertir ahora"
     },
+
     en: {
         title: "Music Downloads",
         description: "Convert your own videos to MP3 or MP4 quickly and easily from any device.",
-        converterTitle: "Video to MP3 & MP4 Converter",
-        placeholder: "Paste a permitted link",
+        converterTitle: "Video to MP3 and MP4 Converter",
+        placeholder: "Paste a permitted direct media link",
         convert: "Convert now"
     }
 };
@@ -38,14 +40,20 @@ languageSelect?.addEventListener("change", function () {
 });
 
 /* MP3 / MP4 */
+
 formatButtons.forEach((button) => {
     button.addEventListener("click", function () {
-        formatButtons.forEach((btn) => btn.classList.remove("active"));
+
+        formatButtons.forEach((btn) => {
+            btn.classList.remove("active");
+        });
+
         this.classList.add("active");
 
         const format = this.dataset.format;
 
         if (format === "mp3") {
+
             qualityLabel.textContent = "Calidad MP3";
 
             qualitySelect.innerHTML = `
@@ -54,7 +62,9 @@ formatButtons.forEach((button) => {
                 <option value="256">256 kbps</option>
                 <option value="320">320 kbps</option>
             `;
+
         } else {
+
             qualityLabel.textContent = "Calidad de video";
 
             qualitySelect.innerHTML = `
@@ -63,94 +73,197 @@ formatButtons.forEach((button) => {
                 <option value="720">720p HD</option>
                 <option value="1080">1080p Full HD</option>
             `;
+
         }
+
     });
 });
 
 /* FILE SELECT */
+
 videoFile?.addEventListener("change", function () {
+
     if (this.files && this.files.length > 0) {
+
         const file = this.files[0];
 
         selectedFileName.textContent =
             "✓ Archivo seleccionado: " + file.name;
+
+        videoUrl.value = "";
+
     } else {
+
         selectedFileName.textContent = "";
+
     }
+
 });
 
-/* CONVERT UPLOADED FILE */
+/* URL INPUT */
+
+videoUrl?.addEventListener("input", function () {
+
+    if (this.value.trim() !== "") {
+
+        videoFile.value = "";
+        selectedFileName.textContent = "";
+
+    }
+
+});
+
+/* CONVERT */
+
 convertButton?.addEventListener("click", async function () {
 
-    /* URL entered */
-    if (videoUrl.value.trim() && (!videoFile.files || videoFile.files.length === 0)) {
-        alert("La conversión mediante enlace se añadirá por separado. Por ahora selecciona un archivo de video.");
-        return;
-    }
+    const activeFormatButton =
+        document.querySelector(".format-btn.active");
 
-    if (!videoFile.files || videoFile.files.length === 0) {
-        alert("Primero selecciona un video.");
-        return;
-    }
+    const format =
+        activeFormatButton?.dataset.format || "mp3";
 
-    const activeButton = document.querySelector(".format-btn.active");
-    const format = activeButton.dataset.format;
-    const quality = qualitySelect.value;
+    const quality =
+        qualitySelect.value;
 
-    const formData = new FormData();
+    const formData =
+        new FormData();
 
-    formData.append("video", videoFile.files[0]);
-    formData.append("format", format);
-    formData.append("quality", quality);
+    const hasFile =
+        videoFile.files &&
+        videoFile.files.length > 0;
 
-    const originalText = convertButton.textContent;
+    const enteredUrl =
+        videoUrl.value.trim();
 
-    convertButton.disabled = true;
-    convertButton.textContent = "Convirtiendo...";
+    if (!hasFile && !enteredUrl) {
 
-    try {
-        const response = await fetch(
-            "https://descargas-musica-backend.onrender.com/convert",
-            {
-                method: "POST",
-                body: formData
-            }
+        alert(
+            "Selecciona un video o introduce un enlace multimedia directo."
         );
 
+        return;
+    }
+
+    if (hasFile) {
+
+        formData.append(
+            "video",
+            videoFile.files[0]
+        );
+
+    } else {
+
+        formData.append(
+            "url",
+            enteredUrl
+        );
+
+    }
+
+    formData.append(
+        "format",
+        format
+    );
+
+    formData.append(
+        "quality",
+        quality
+    );
+
+    const originalText =
+        convertButton.textContent;
+
+    convertButton.disabled = true;
+    convertButton.textContent =
+        "Convirtiendo...";
+
+    try {
+
+        const response =
+            await fetch(
+                "https://descargas-musica-backend.onrender.com/convert",
+                {
+                    method: "POST",
+                    body: formData
+                }
+            );
+
         if (!response.ok) {
-            throw new Error("Conversion failed");
+
+            let message =
+                "No se pudo convertir el archivo.";
+
+            try {
+
+                const errorData =
+                    await response.json();
+
+                if (errorData.error) {
+                    message =
+                        errorData.error;
+                }
+
+            } catch {}
+
+            throw new Error(message);
         }
 
-        const blob = await response.blob();
-        const fileUrl = URL.createObjectURL(blob);
+        const blob =
+            await response.blob();
 
-        const link = document.createElement("a");
+        const downloadUrl =
+            URL.createObjectURL(blob);
 
-        link.href = fileUrl;
+        const link =
+            document.createElement("a");
+
+        link.href =
+            downloadUrl;
+
         link.download =
             format === "mp3"
                 ? "descargas-musica.mp3"
                 : "descargas-musica.mp4";
 
         document.body.appendChild(link);
+
         link.click();
+
         link.remove();
 
-        URL.revokeObjectURL(fileUrl);
+        URL.revokeObjectURL(
+            downloadUrl
+        );
 
-        convertButton.textContent = "¡Completado!";
+        convertButton.textContent =
+            "¡Conversión completada!";
 
         setTimeout(() => {
-            convertButton.textContent = originalText;
-            convertButton.disabled = false;
+
+            convertButton.textContent =
+                originalText;
+
+            convertButton.disabled =
+                false;
+
         }, 2000);
 
     } catch (error) {
+
         console.error(error);
 
-        alert("No se pudo convertir el video.");
+        alert(
+            error.message ||
+            "No se pudo convertir el archivo."
+        );
 
-        convertButton.textContent = originalText;
-        convertButton.disabled = false;
+        convertButton.textContent =
+            originalText;
+
+        convertButton.disabled =
+            false;
+
     }
+
 });
