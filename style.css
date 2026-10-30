@@ -222,3 +222,27 @@ header {
 .converter-box {
     padding-bottom: 35px !important;
 }
+.quality-section {
+    margin: 0 auto 25px;
+    max-width: 300px;
+    text-align: left;
+}
+
+.quality-section label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #374151;
+}
+
+.quality-section select {
+    width: 100%;
+    padding: 13px 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    background: #ffffff;
+    font-size: 15px;
+    outline: none;
+    cursor: pointer;
+}
