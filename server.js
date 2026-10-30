@@ -311,15 +311,22 @@ app.post(
             }
 
             /* Direct media URL */
+else if (req.body.url) {
 
-            else if (req.body.url) {
+    const originalUrl =
+        req.body.url.trim();
 
-                inputPath =
-                    await downloadRemoteMedia(
-                        req.body.url.trim()
-                    );
+    const mediaUrl =
+        await findPublicMediaUrl(
+            originalUrl
+        );
 
-            }
+    inputPath =
+        await downloadRemoteMedia(
+            mediaUrl
+        );
+
+}
 
             else {
 
