@@ -139,3 +139,47 @@ header {
         padding: 24px 18px;
     }
 }
+
+header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.language-dropdown select {
+    padding: 10px 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    background: #ffffff;
+    font-size: 15px;
+    cursor: pointer;
+    outline: none;
+}
+
+.badge {
+    display: inline-block;
+    margin-bottom: 18px;
+    padding: 8px 14px;
+    border-radius: 30px;
+    background: #eef2ff;
+    color: #4f46e5;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.input-wrap {
+    width: 100%;
+}
+
+.format-btn.active {
+    background: linear-gradient(135deg, #4f46e5, #06b6d4);
+    color: #ffffff;
+    border-color: transparent;
+}
+
+.small-note {
+    margin-top: 18px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #9ca3af;
+}
