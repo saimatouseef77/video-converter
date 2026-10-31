@@ -234,72 +234,62 @@ async function findRenderedPublicMediaUrl(pageUrl) {
 
                     try {
 
-                        await validateRemoteUrl(candidate);
+                        await validateRemoteUrl(
+                            candidate
+                        );
 
                         networkCandidates.add(
                             candidate
                         );
 
-                    } catch {
-                        // unsafe/private URL ignore
-                    }
+                    } catch {}
                 }
 
-            } catch {
-                // response ignore
-            }
+            } catch {}
         });
 
         await page.goto(
             safePageUrl,
             {
-                waitUntil: "domcontentloaded",
+                waitUntil: "networkidle",
                 timeout: 30000
             }
         );
 
-        await page.waitForTimeout(3000);
+        await page.waitForTimeout(2500);
 
         const renderedCandidates =
             await page.evaluate(() => {
 
-                const values = [];
+                const results = [];
 
-                function add(value) {
-                    if (value) {
-                        values.push(value);
+                const add = (value) => {
+
+                    if (
+                        value &&
+                        typeof value === "string" &&
+                        !results.includes(value)
+                    ) {
+                        results.push(value);
                     }
-                }
+                };
 
-                add(
-                    document.querySelector(
-                        'meta[property="og:video:secure_url"]'
-                    )?.content
-                );
+                [
+                    'meta[property="og:video"]',
+                    'meta[property="og:video:url"]',
+                    'meta[property="og:video:secure_url"]',
+                    'meta[property="og:audio"]',
+                    'meta[property="og:audio:url"]',
+                    'meta[property="og:audio:secure_url"]',
+                    'meta[name="twitter:player:stream"]'
+                ].forEach((selector) => {
 
-                add(
-                    document.querySelector(
-                        'meta[property="og:video"]'
-                    )?.content
-                );
-
-                add(
-                    document.querySelector(
-                        'meta[property="og:audio:secure_url"]'
-                    )?.content
-                );
-
-                add(
-                    document.querySelector(
-                        'meta[property="og:audio"]'
-                    )?.content
-                );
-
-                add(
-                    document.querySelector(
-                        'meta[name="twitter:player:stream"]'
-                    )?.content
-                );
+                    add(
+                        document
+                            .querySelector(selector)
+                            ?.getAttribute("content")
+                    );
+                });
 
                 document
                     .querySelectorAll(
@@ -307,17 +297,75 @@ async function findRenderedPublicMediaUrl(pageUrl) {
                     )
                     .forEach((element) => {
 
+                        add(element.currentSrc);
+                        add(element.src);
                         add(
-                            element.currentSrc ||
-                            element.src ||
                             element.getAttribute("src")
                         );
                     });
 
-                return values;
+                document
+                    .querySelectorAll(
+                        'link[rel="preload"][as="video"], link[rel="preload"][as="audio"]'
+                    )
+                    .forEach((element) => {
+
+                        add(
+                            element.getAttribute("href")
+                        );
+                    });
+
+                document
+                    .querySelectorAll(
+                        'script[type="application/ld+json"]'
+                    )
+                    .forEach((script) => {
+
+                        try {
+
+                            const data =
+                                JSON.parse(
+                                    script.textContent
+                                );
+
+                            const items =
+                                Array.isArray(data)
+                                    ? data
+                                    : [data];
+
+                            const scan = (item) => {
+
+                                if (
+                                    !item ||
+                                    typeof item !== "object"
+                                ) {
+                                    return;
+                                }
+
+                                add(item.contentUrl);
+
+                                if (
+                                    Array.isArray(item["@graph"])
+                                ) {
+                                    item["@graph"]
+                                        .forEach(scan);
+                                }
+                            };
+
+                            items.forEach(scan);
+
+                        } catch {}
+                    });
+
+                return results;
             });
 
-        for (const candidate of renderedCandidates) {
+        const allCandidates = [
+            ...renderedCandidates,
+            ...networkCandidates
+        ];
+
+        for (const candidate of allCandidates) {
 
             try {
 
@@ -331,26 +379,30 @@ async function findRenderedPublicMediaUrl(pageUrl) {
                     absoluteUrl
                 );
 
-                await browser.close();
+                const testResponse =
+                    await fetch(
+                        absoluteUrl,
+                        {
+                            method: "HEAD",
+                            redirect: "follow"
+                        }
+                    );
 
-                return absoluteUrl;
+                const type =
+                    testResponse.headers.get(
+                        "content-type"
+                    ) || "";
 
-            } catch {
-                // next candidate
-            }
-        }
+                if (
+                    type.startsWith("video/") ||
+                    type.startsWith("audio/") ||
+                    type.includes("octet-stream")
+                ) {
 
-        for (const candidate of networkCandidates) {
+                    await browser.close();
 
-            try {
-
-                await validateRemoteUrl(
-                    candidate
-                );
-
-                await browser.close();
-
-                return candidate;
+                    return absoluteUrl;
+                }
 
             } catch {
                 // next candidate
@@ -373,6 +425,7 @@ async function findRenderedPublicMediaUrl(pageUrl) {
         throw error;
     }
 }
+
 async function downloadRemoteMedia(urlString) {
 
     const safeUrl = await validateRemoteUrl(urlString);
