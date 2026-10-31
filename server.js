@@ -505,10 +505,35 @@ else if (req.body.url) {
     const originalUrl =
         req.body.url.trim();
 
-    const mediaUrl =
-        await findPublicMediaUrl(
-            originalUrl
-        );
+    let mediaUrl;
+
+    try {
+
+        // Pehle normal HTML/public media check
+        mediaUrl =
+            await findPublicMediaUrl(
+                originalUrl
+            );
+
+    } catch (error) {
+
+        if (
+            error.message ===
+            "NO_PUBLIC_MEDIA"
+        ) {
+
+            // Agar simple HTML se media na mile
+            // to Playwright browser se rendered page check karo
+            mediaUrl =
+                await findRenderedPublicMediaUrl(
+                    originalUrl
+                );
+
+        } else {
+
+            throw error;
+        }
+    }
 
     inputPath =
         await downloadRemoteMedia(
