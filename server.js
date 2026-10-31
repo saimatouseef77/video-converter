@@ -543,12 +543,10 @@ res.download(
                     "El archivo supera el límite permitido.";
             }
 
-            if (
                 if (error.message === "NO_PUBLIC_MEDIA") {
     message =
         "No se encontró un archivo multimedia público en este enlace.";
 }
-            }
 
             return res
                 .status(400)
