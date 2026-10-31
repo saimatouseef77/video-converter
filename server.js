@@ -184,6 +184,195 @@ async function findPublicMediaUrl(pageUrl) {
 /* -----------------------------
    DOWNLOAD DIRECT MEDIA URL
 ----------------------------- */
+async function findRenderedPublicMediaUrl(pageUrl) {
+
+    const safePageUrl =
+        await validateRemoteUrl(pageUrl);
+
+    let browser;
+
+    try {
+
+        browser = await chromium.launch({
+            headless: true,
+            args: [
+                "--no-sandbox",
+                "--disable-setuid-sandbox",
+                "--disable-dev-shm-usage"
+            ]
+        });
+
+        const context =
+            await browser.newContext({
+                userAgent:
+                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36"
+            });
+
+        const page =
+            await context.newPage();
+
+        const networkCandidates =
+            new Set();
+
+        page.on("response", async (response) => {
+
+            try {
+
+                const headers =
+                    await response.allHeaders();
+
+                const contentType =
+                    headers["content-type"] || "";
+
+                if (
+                    contentType.startsWith("video/") ||
+                    contentType.startsWith("audio/")
+                ) {
+
+                    const candidate =
+                        response.url();
+
+                    try {
+
+                        await validateRemoteUrl(candidate);
+
+                        networkCandidates.add(
+                            candidate
+                        );
+
+                    } catch {
+                        // unsafe/private URL ignore
+                    }
+                }
+
+            } catch {
+                // response ignore
+            }
+        });
+
+        await page.goto(
+            safePageUrl,
+            {
+                waitUntil: "domcontentloaded",
+                timeout: 30000
+            }
+        );
+
+        await page.waitForTimeout(3000);
+
+        const renderedCandidates =
+            await page.evaluate(() => {
+
+                const values = [];
+
+                function add(value) {
+                    if (value) {
+                        values.push(value);
+                    }
+                }
+
+                add(
+                    document.querySelector(
+                        'meta[property="og:video:secure_url"]'
+                    )?.content
+                );
+
+                add(
+                    document.querySelector(
+                        'meta[property="og:video"]'
+                    )?.content
+                );
+
+                add(
+                    document.querySelector(
+                        'meta[property="og:audio:secure_url"]'
+                    )?.content
+                );
+
+                add(
+                    document.querySelector(
+                        'meta[property="og:audio"]'
+                    )?.content
+                );
+
+                add(
+                    document.querySelector(
+                        'meta[name="twitter:player:stream"]'
+                    )?.content
+                );
+
+                document
+                    .querySelectorAll(
+                        "video, video source, audio, audio source"
+                    )
+                    .forEach((element) => {
+
+                        add(
+                            element.currentSrc ||
+                            element.src ||
+                            element.getAttribute("src")
+                        );
+                    });
+
+                return values;
+            });
+
+        for (const candidate of renderedCandidates) {
+
+            try {
+
+                const absoluteUrl =
+                    new URL(
+                        candidate,
+                        safePageUrl
+                    ).toString();
+
+                await validateRemoteUrl(
+                    absoluteUrl
+                );
+
+                await browser.close();
+
+                return absoluteUrl;
+
+            } catch {
+                // next candidate
+            }
+        }
+
+        for (const candidate of networkCandidates) {
+
+            try {
+
+                await validateRemoteUrl(
+                    candidate
+                );
+
+                await browser.close();
+
+                return candidate;
+
+            } catch {
+                // next candidate
+            }
+        }
+
+        throw new Error(
+            "NO_PUBLIC_MEDIA"
+        );
+
+    } catch (error) {
+
+        if (browser) {
+
+            try {
+                await browser.close();
+            } catch {}
+        }
+
+        throw error;
+    }
+}
 async function downloadRemoteMedia(urlString) {
 
     const safeUrl = await validateRemoteUrl(urlString);
@@ -195,7 +384,6 @@ async function downloadRemoteMedia(urlString) {
     }, 30000);
 
     try {
-
         const response = await fetch(safeUrl, {
             signal: controller.signal,
             redirect: "follow",
